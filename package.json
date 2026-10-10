@@ -1,0 +1,77 @@
+{
+  "name": "oc-ferry",
+  "version": "0.2.9",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test test/*.test.js",
+    "desktop": "electron .",
+    "build:mac": "node scripts/build-mac.mjs && node scripts/verify-mac.mjs",
+    "build:win": "electron-builder --win portable --x64 --publish never",
+    "build:win:arm64": "electron-builder --win portable --arm64 --publish never",
+    "build:linux": "electron-builder --linux AppImage --x64 --publish never"
+  },
+  "dependencies": {
+    "tar": "7.5.22",
+    "undici": "^7.30.0"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  },
+  "description": "OC Ferry — 把 OpenCode 的免费模型摆渡给 WorkBuddy：隔离运行时、并发检测、判定缓存、一键导入、本机 OpenAI 兼容转发口",
+  "author": "HRuiCcc",
+  "main": "desktop/main.cjs",
+  "build": {
+    "appId": "local.ruic.oc-ferry",
+    "productName": "OC Ferry",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "desktop/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "asar": false,
+    "artifactName": "OC-Ferry-${version}-${os}-${arch}.${ext}",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "minimumSystemVersion": "13.0",
+      "hardenedRuntime": false,
+      "notarize": false,
+      "target": "dir"
+    },
+    "win": {
+      "target": "portable",
+      "signExecutable": false
+    },
+    "portable": {
+      "artifactName": "OC-Ferry-${version}-win-${arch}-portable.${ext}"
+    },
+    "linux": {
+      "category": "Utility"
+    },
+    "icon": "desktop/icon.png"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HRuiCcc/RuiC-oc-ferry.git"
+  },
+  "keywords": [
+    "opencode",
+    "workbuddy",
+    "free-models",
+    "openai-compatible",
+    "electron",
+    "tray-app",
+    "llm",
+    "macos",
+    "windows"
+  ]
+}

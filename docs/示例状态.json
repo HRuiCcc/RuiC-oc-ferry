@@ -1,0 +1,380 @@
+{
+  "phase": "ready",
+  "message": "运行中 · 11 个免费模型",
+  "endpoint": "http://127.0.0.1:41980/v1",
+  "modelsFile": "/Users/you/.workbuddy/models.json",
+  "version": "0.2.0",
+  "opencodeVersion": "1.18.35",
+  "useSystemProxy": false,
+  "models": [
+    {
+      "id": "opencode/big-pickle",
+      "name": "Big Pickle",
+      "context": 200000,
+      "input": 160000,
+      "images": false,
+      "output": 32000,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {}
+    },
+    {
+      "id": "opencode/exo-free",
+      "name": "Exo Free",
+      "context": 1048576,
+      "images": true,
+      "output": 131072,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "high": {
+          "reasoningEffort": "high"
+        }
+      }
+    },
+    {
+      "id": "opencode/ling-3.0-flash-fin-free",
+      "name": "Ling 3.0 Flash Fin Free",
+      "context": 262144,
+      "images": false,
+      "output": 32768,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "medium": {
+          "reasoningEffort": "medium"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        }
+      }
+    },
+    {
+      "id": "opencode/ling-3.1-flash-free",
+      "name": "Ling 3.1 Flash Free",
+      "context": 262144,
+      "images": false,
+      "output": 32768,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "medium": {
+          "reasoningEffort": "medium"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        }
+      }
+    },
+    {
+      "id": "opencode/longcat-2.5-preview-free",
+      "name": "LongCat 2.5 Preview Free",
+      "context": 1000000,
+      "images": true,
+      "output": 131072,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "medium": {
+          "reasoningEffort": "medium"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        }
+      }
+    },
+    {
+      "id": "opencode/mimo-v2.6-flash-free",
+      "name": "MiMo-V2.6-Flash Free",
+      "context": 200000,
+      "images": true,
+      "output": 32000,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {}
+    },
+    {
+      "id": "opencode/muse-spark-1.3-contributor-free",
+      "name": "Muse Spark 1.3 Free",
+      "context": 1048576,
+      "images": true,
+      "output": 131072,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "minimal": {
+          "reasoningEffort": "minimal",
+          "reasoningSummary": "auto",
+          "include": [
+            "reasoning.encrypted_content"
+          ]
+        },
+        "low": {
+          "reasoningEffort": "low",
+          "reasoningSummary": "auto",
+          "include": [
+            "reasoning.encrypted_content"
+          ]
+        },
+        "medium": {
+          "reasoningEffort": "medium",
+          "reasoningSummary": "auto",
+          "include": [
+            "reasoning.encrypted_content"
+          ]
+        },
+        "high": {
+          "reasoningEffort": "high",
+          "reasoningSummary": "auto",
+          "include": [
+            "reasoning.encrypted_content"
+          ]
+        },
+        "xhigh": {
+          "reasoningEffort": "xhigh",
+          "reasoningSummary": "auto",
+          "include": [
+            "reasoning.encrypted_content"
+          ]
+        }
+      }
+    },
+    {
+      "id": "opencode/nemotron-3-ultra-free",
+      "name": "Nemotron 3 Ultra Free",
+      "context": 1000000,
+      "images": false,
+      "output": 128000,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {}
+    },
+    {
+      "id": "opencode/nemotron-3.5-lightning-free",
+      "name": "Nemotron 3.5 Lightning Free",
+      "context": 262144,
+      "images": false,
+      "output": 262144,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {}
+    },
+    {
+      "id": "opencode/space-bunny-free",
+      "name": "Space Bunny Free",
+      "context": 1048576,
+      "input": 524288,
+      "images": true,
+      "output": 524288,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "medium": {
+          "reasoningEffort": "medium"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        },
+        "xhigh": {
+          "reasoningEffort": "xhigh"
+        },
+        "max": {
+          "reasoningEffort": "max"
+        }
+      }
+    },
+    {
+      "id": "opencode/step-5-preview-free",
+      "name": "Step 5 Preview Free",
+      "context": 1000000,
+      "input": 1000000,
+      "images": true,
+      "output": 65536,
+      "toolcall": true,
+      "reasoning": true,
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "medium": {
+          "reasoningEffort": "medium"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        }
+      }
+    }
+  ],
+  "modelResults": {
+    "opencode/big-pickle": {
+      "model": "opencode/big-pickle",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:45.894Z",
+      "durationMs": 9350,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/exo-free": {
+      "model": "opencode/exo-free",
+      "ok": false,
+      "category": "error",
+      "time": "2026-10-10T08:56:44.050Z",
+      "error": "Model exo-free has been deprecated.",
+      "status": 410,
+      "code": "model_error",
+      "durationMs": 7504,
+      "source": "probe",
+      "chatOnly": false,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/ling-3.0-flash-fin-free": {
+      "model": "opencode/ling-3.0-flash-fin-free",
+      "ok": false,
+      "category": "timeout",
+      "time": "2026-10-10T08:57:36.569Z",
+      "error": "Model probe timed out",
+      "status": 504,
+      "code": "timeout",
+      "durationMs": 60022,
+      "source": "probe",
+      "chatOnly": false,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/ling-3.1-flash-free": {
+      "model": "opencode/ling-3.1-flash-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:55.875Z",
+      "durationMs": 11824,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/longcat-2.5-preview-free": {
+      "model": "opencode/longcat-2.5-preview-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:50.201Z",
+      "durationMs": 4306,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/mimo-v2.6-flash-free": {
+      "model": "opencode/mimo-v2.6-flash-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:53.166Z",
+      "durationMs": 2966,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/muse-spark-1.3-contributor-free": {
+      "model": "opencode/muse-spark-1.3-contributor-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:55.022Z",
+      "error": "工具转换不兼容：only `\"auto\"` is supported for `tool_choice`. `\"none\"`, `\"required\"`, and named function choices are not currently supported",
+      "code": "chat_only",
+      "durationMs": 1855,
+      "source": "probe",
+      "chatOnly": true
+    },
+    "opencode/nemotron-3-ultra-free": {
+      "model": "opencode/nemotron-3-ultra-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:57:00.286Z",
+      "error": "工具转换不兼容：Model did not return a valid bridge response; no tool was executed",
+      "code": "chat_only",
+      "durationMs": 5264,
+      "source": "probe",
+      "chatOnly": true
+    },
+    "opencode/nemotron-3.5-lightning-free": {
+      "model": "opencode/nemotron-3.5-lightning-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:56:58.464Z",
+      "durationMs": 2589,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    },
+    "opencode/space-bunny-free": {
+      "model": "opencode/space-bunny-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:57:00.291Z",
+      "durationMs": 1826,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 1,
+      "steps": 1,
+      "handoff": "Read"
+    },
+    "opencode/step-5-preview-free": {
+      "model": "opencode/step-5-preview-free",
+      "ok": true,
+      "category": "available",
+      "time": "2026-10-10T08:57:05.934Z",
+      "durationMs": 5648,
+      "source": "probe",
+      "chatOnly": false,
+      "calls": 1,
+      "nativeAttempts": 0,
+      "steps": 1
+    }
+  },
+  "availableModels": [
+    "opencode/big-pickle",
+    "opencode/ling-3.1-flash-free",
+    "opencode/longcat-2.5-preview-free",
+    "opencode/mimo-v2.6-flash-free",
+    "opencode/muse-spark-1.3-contributor-free",
+    "opencode/nemotron-3-ultra-free",
+    "opencode/nemotron-3.5-lightning-free",
+    "opencode/space-bunny-free",
+    "opencode/step-5-preview-free"
+  ],
+  "excludedModels": [],
+  "probe": {
+    "running": false,
+    "current": null,
+    "active": [],
+    "pending": []
+  },
+  "sync": {
+    "changed": true,
+    "count": 9,
+    "time": "2026-10-10T08:56:45.894Z"
+  }
+}

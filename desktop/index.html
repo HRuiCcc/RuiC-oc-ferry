@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <meta name="color-scheme" content="light dark">
+  <title>OC Ferry</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-toolbar">
+      <div class="brand">
+        <img class="brand-icon" src="icon.png" width="28" height="28" alt="">
+        <h1>OC Ferry</h1>
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <span class="surface-title">模型与服务</span>
+      </div>
+      <div class="toolbar-controls">
+        <div class="theme-control" role="group" aria-label="界面主题">
+          <button id="theme-system" type="button" data-theme-choice="system" aria-pressed="true" title="跟随系统设置">系统</button>
+          <button id="theme-light" type="button" data-theme-choice="light" aria-pressed="false" title="始终使用浅色界面">浅色</button>
+          <button id="theme-dark" type="button" data-theme-choice="dark" aria-pressed="false" title="始终使用深色界面">深色</button>
+        </div>
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <label class="proxy-control" for="proxy">
+          <span>使用系统代理</span>
+          <input id="proxy" type="checkbox" role="switch" aria-label="使用系统代理" disabled>
+        </label>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="command-bar" aria-label="模型操作">
+        <div class="refresh-group">
+          <h2>免费模型</h2>
+          <p class="command-caption">把 OpenCode 的免费模型摆渡给 WorkBuddy</p>
+          <div class="scan-actions" role="group" aria-label="读取与检测模型">
+            <button id="refresh" type="button" disabled>
+              <svg class="button-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15.7 7A6 6 0 1 0 16 12M16 3v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>读取免费模型</span>
+            </button>
+            <button id="probe" type="button" disabled>
+              <svg class="button-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10h3l2-5 4 10 2-5h3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>检测全部</span>
+            </button>
+          </div>
+        </div>
+        <div class="import-group">
+          <div class="import-target">
+            <span class="target-label">写入 WorkBuddy 配置</span>
+            <p id="target-file" class="file-path">尚未定位配置文件，导入时查找或选择</p>
+            <span id="selected-count" class="selection-count">已选 0 个可用模型</span>
+          </div>
+          <button id="import" class="primary" type="button" aria-describedby="target-file selected-count" disabled>
+            <svg class="button-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3v9m-3-3 3 3 3-3M4 12v4h12v-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>导入 WorkBuddy</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="model-section" aria-labelledby="models-heading">
+        <div class="list-toolbar">
+          <div class="list-title">
+            <h3 id="models-heading">模型清单</h3>
+            <p id="table-hint">勾选决定导入，点击行查看详情。</p>
+          </div>
+          <dl class="metrics" aria-label="模型统计">
+            <div><dt>已发现</dt><dd id="discovered">0</dd></div>
+            <div class="available-metric"><dt>可用</dt><dd id="available">0</dd></div>
+            <div><dt>待检测</dt><dd id="pending">0</dd></div>
+          </dl>
+        </div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+        <div id="models" class="table-scroll" tabindex="0" role="region" aria-label="可滚动的模型清单" aria-describedby="table-hint">
+          <table class="model-table" aria-label="免费模型" aria-describedby="table-hint">
+            <colgroup><col class="check-column"><col class="name-column"><col class="capability-column"><col class="status-column"><col class="timing-column"></colgroup>
+            <thead><tr><th scope="col" class="check-heading"><span class="visually-hidden">是否导入</span></th><th scope="col">模型</th><th scope="col">能力</th><th scope="col">状态</th><th scope="col" class="timing-heading">耗时</th></tr></thead>
+            <tbody id="model-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="workspace-footer">
+        <p id="sync" class="sync-text" role="status" aria-live="polite">首次读取和检测完成后自动导入 WorkBuddy</p>
+        <details class="information">
+          <summary aria-label="展开或收起说明">
+            <svg class="info-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 9v5m0-8v.5" stroke-linecap="round"/></svg>
+            <span>说明</span>
+            <svg class="disclosure-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m5 6 3 3 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="information-content">
+            <p class="honest-note">启动后自动发送简短请求检测，会使用少量免费额度，不代表工具流程已验证。耗时为完整请求用时，非首字延迟。不可用模型仅在本窗口保留，不供 WorkBuddy 使用；剩余额度暂不可查询。</p>
+            <p class="creator">本机运行：账号与配置只保存在这台机器上<br>推理请求会发往你选中的上游模型</p>
+          </div>
+        </details>
+      </footer>
+    </main>
+
+    <section id="service-status" class="service-status" aria-label="服务状态">
+      <div class="service-main">
+        <span id="service-dot" class="dot starting" aria-hidden="true"></span>
+        <span id="service-text" role="status" aria-live="polite" aria-atomic="true">正在启动隔离模型服务</span>
+        <span id="probe-progress" class="probe-progress" hidden></span>
+        <button id="restart" type="button" hidden>重试</button>
+      </div>
+      <div class="service-facts" aria-label="服务信息">
+        <span class="endpoint-fact">转发口 <span id="endpoint" class="fact-value">尚未启动</span></span>
+        <span class="version-fact">OpenCode <span id="opencode-version" class="fact-value">—</span></span>
+      </div>
+    </section>
+  </div>
+  <script src="activity.cjs"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
