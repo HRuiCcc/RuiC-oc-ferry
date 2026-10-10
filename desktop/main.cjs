@@ -10,6 +10,9 @@ const { activityText } = require('./activity.cjs');
 // src/main.js 里，这样同一个核心既能被桌面端驱动，也能 `npm start` 单跑。
 app.setName('OC Ferry');
 app.setAppUserModelId('local.ruic.oc-ferry');
+// 开机自启（安装包写的那条快捷方式）带 --hidden：只有托盘和后台服务，不弹窗。
+// 用户自己双击桌面图标时不带这个参数，照常把窗口打开。
+const startHidden = process.argv.includes('--hidden');
 let window, tray, service, timer, log, quitting = false, mayQuit = false, actionBusy = false;
 let state = { phase: 'starting', message: '正在启动隔离模型服务', models: [], modelResults: {} };
 let dataDir, lastMenu = '';
@@ -193,6 +196,8 @@ else {
     if (process.platform === 'darwin') trayIcon.setTemplateImage(true);
     tray = new Tray(trayIcon);
     tray.on('click', showWindow);
-    showWindow(); publish(); await startService();
+    // 自启动只留托盘：窗口等用户点托盘图标再建，省得每次开机都糊一屏。
+    if (startHidden) publish(); else showWindow();
+    await startService();
   }).catch(error => { dialog.showErrorBox('启动失败', error.message); app.quit(); });
 }

@@ -61,7 +61,10 @@ flowchart LR
 先安装 WorkBuddy。**不需要另外装 Node.js**（打包后的应用用 Electron 自带的 Node 跑后台服务）。
 
 - **macOS**：解压 zip，把 `OC Ferry.app` 拖进「应用程序」，双击打开。未做 Apple 公证，首次打开可能要右键 →「打开」。
-- **Windows**：解压 portable 包（必须完整解压，不要只复制 exe），双击 `OC Ferry.exe`。
+- **Windows**：运行 `OC-Ferry-Setup-<版本>-win-x64.exe`，装完桌面就有了图标，双击即开。
+  安装包会同时做两件事：把**开机自启**写进当前用户的 Run 项（启动参数 `--hidden`，开机后只常驻托盘、不弹窗）、并保证卸载时把这一条摘干净。
+  因此装完就等于「一直连着」——不用每次先开一次应用，WorkBuddy 里的免费模型才在。
+  （只想要绿色版的话用 `npm run build:win:portable`；portable 包必须完整解压，不要只复制 exe。）
 
 首次启动会自动准备 OpenCode、扫描免费模型并逐个检测，**检测完自动导入一次**。之后重新检测或读取**不会**自动改 WorkBuddy，需要点「导入 WorkBuddy」。
 
@@ -79,7 +82,8 @@ npm test              # 85 项自动测试，不访问网络
 npm run desktop       # 起 Electron（窗口 + 托盘 + 后台服务）
 npm start             # 只起后台服务（无界面），用于调试
 npm run build:mac     # 打 macOS zip（ad-hoc 签名 + 深度严格校验）
-npm run build:win     # 打 Windows portable
+npm run build:win     # 打 Windows 安装包（NSIS，桌面图标 + 开机自启）
+npm run build:win:portable   # 打 Windows 便携版（不写注册表、不自启）
 ```
 
 ### 数据目录

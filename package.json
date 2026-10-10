@@ -1,6 +1,6 @@
 {
   "name": "oc-ferry",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -11,7 +11,8 @@
     "test": "node --test test/*.test.js",
     "desktop": "electron .",
     "build:mac": "node scripts/build-mac.mjs && node scripts/verify-mac.mjs",
-    "build:win": "electron-builder --win portable --x64 --publish never",
+    "build:win": "electron-builder --win nsis --x64 --publish never",
+    "build:win:portable": "electron-builder --win portable --x64 --publish never",
     "build:win:arm64": "electron-builder --win portable --arm64 --publish never",
     "build:linux": "electron-builder --linux AppImage --x64 --publish never"
   },
@@ -48,8 +49,19 @@
       "target": "dir"
     },
     "win": {
-      "target": "portable",
+      "target": "nsis",
       "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "OC Ferry",
+      "runAfterFinish": false,
+      "artifactName": "OC-Ferry-Setup-${version}-win-${arch}.${ext}",
+      "include": "build/installer.nsh"
     },
     "portable": {
       "artifactName": "OC-Ferry-${version}-win-${arch}-portable.${ext}"

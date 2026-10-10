@@ -6,18 +6,21 @@ import os from 'node:os';
 import { createHash } from 'node:crypto';
 import { c as createTar } from 'tar';
 import { findRuntime, runtimeCandidates, startBackend } from '../src/runtime.js';
+import { runtimePackage } from '../src/platform.js';
 
-const PKG = 'opencode-darwin-arm64';
+// 包名与二进制名按当前平台取：Windows 上是 opencode-windows-x64 / opencode.exe，
+// 写死成 darwin 那一对会让整条 Windows 路径压根没被测到。
+const { name: PKG, binary: BIN } = runtimePackage();
 const probe = async file => (await fs.readFile(file, 'utf8')).trim();
 
-// 造一个真的 npm 形态的 tarball：包里只有 package/bin/opencode 一个文件，
+// 造一个真的 npm 形态的 tarball：包里只有 package/bin/<二进制> 一个文件，
 // 它的内容就是版本号，这样假 probe 能像真二进制一样报告版本。
 async function makeTarball(version) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'ferry-tar-'));
   await fs.mkdir(path.join(dir, 'package', 'bin'), { recursive: true });
-  await fs.writeFile(path.join(dir, 'package', 'bin', 'opencode'), version);
+  await fs.writeFile(path.join(dir, 'package', 'bin', BIN), version);
   const file = path.join(dir, 'pkg.tgz');
-  await createTar({ gzip: true, cwd: dir, file }, ['package/bin/opencode']);
+  await createTar({ gzip: true, cwd: dir, file }, [`package/bin/${BIN}`]);
   const bytes = await fs.readFile(file);
   await fs.rm(dir, { recursive: true, force: true });
   return { bytes, integrity: `sha512-${createHash('sha512').update(bytes).digest('base64')}`, tarball: `https://registry.npmjs.org/${PKG}/-/${PKG}-${version}.tgz` };
@@ -58,14 +61,14 @@ test('本机运行时发现路径按平台给出，Windows 额外找 npm 全局'
 test('官方查不到版本时复用本机已有的托管运行时', async () => {
   const { dir, root, dataDir } = await scratch();
   await fs.mkdir(path.join(root, '1.18.30'), { recursive: true });
-  await fs.writeFile(path.join(root, '1.18.30', 'opencode'), '1.18.30');
+  await fs.writeFile(path.join(root, '1.18.30', BIN), '1.18.30');
   const logs = [];
   const file = await findRuntime(dataDir, () => {}, {
     probe,
     latest: async () => { throw new Error('离线'); },
     log: message => logs.push(message),
   });
-  assert.equal(file, path.join(root, '1.18.30', 'opencode'));
+  assert.equal(file, path.join(root, '1.18.30', BIN));
   assert.ok(logs.some(line => /using local 1\.18\.30/.test(line)));
   await fs.rm(dir, { recursive: true, force: true });
 });
@@ -79,9 +82,10 @@ test('官方有更新版本时下载、校验、解压，并落进按版本命�
     fetch: fetchFor({ metadata: metadataFor('1.19.0', tarball, integrity), bytes, onCall: url => seen.push(url) }),
     log: () => {},
   });
-  assert.equal(file, path.join(root, '1.19.0', 'opencode'));
+  assert.equal(file, path.join(root, '1.19.0', BIN));
   assert.equal(await fs.readFile(file, 'utf8'), '1.19.0');
-  assert.equal((await fs.stat(file)).mode & 0o111, 0o111, '二进制要可执行');
+  // Windows 不表示可执行位，这一条只在 POSIX 上有意义。
+  if (process.platform !== 'win32') assert.equal((await fs.stat(file)).mode & 0o111, 0o111, '二进制要可执行');
   assert.ok(seen.some(url => url.endsWith('/latest')));
   assert.ok(seen.some(url => url === tarball));
   // 下载的压缩包不留存档
@@ -125,7 +129,7 @@ test('官方源挂了会退到国内镜像，校验值仍用官方的那一份',
     return { ok: true, status: 200, body: new Response(bytes).body };
   };
   const file = await findRuntime(dataDir, () => {}, { probe, fetch, log: message => logs.push(message) });
-  assert.equal(file, path.join(root, '1.19.3', 'opencode'));
+  assert.equal(file, path.join(root, '1.19.3', BIN));
   assert.equal(await fs.readFile(file, 'utf8'), '1.19.3');
   assert.ok(logs.some(line => /已切换到 registry\.npmmirror\.com/.test(line)));
   await fs.rm(dir, { recursive: true, force: true });
@@ -182,16 +186,30 @@ test('启动脚本不能当运行时：.cmd/.bat 候选会被拒绝并记录原�
 
 test('startBackend 用白名单环境变量启动，失败时清理干净', async () => {
   const { dir, dataDir } = await scratch();
-  const binary = path.join(dir, 'bin', 'opencode');
+  const binary = path.join(dir, 'bin', BIN);
+  // 一个假运行时：--version 报版本，serve 立刻退出（模拟启动失败），
+  // 并在退出前把自己拿到的环境变量原样写出来，供白名单断言核对。
+  const project = path.join(dataDir, 'opencode', 'project');
+  const envDump = path.join(dir, 'env.json');
+  const dump = `require('node:fs').writeFileSync(${JSON.stringify(envDump)}, JSON.stringify(process.env));\n`;
   await fs.mkdir(path.dirname(binary), { recursive: true });
-  // 一个假二进制：--version 报版本，serve 立刻退出（模拟启动失败）。
-  await fs.writeFile(binary, `#!/usr/bin/env node
+  await fs.mkdir(project, { recursive: true });
+  if (process.platform === 'win32') {
+    // Windows 只肯执行真正的 PE 映像：.cmd 会被 spawn 判成 EINVAL，
+    // 文本冒充 .exe 是 UNKNOWN。所以拿一份 node.exe 当运行时，
+    // 它的子命令（models / serve）交给 cwd 下的同名脚本承担——node 认无扩展名入口。
+    await fs.copyFile(process.execPath, binary);
+    await fs.writeFile(path.join(project, 'models'), 'process.exit(0);\n');
+    await fs.writeFile(path.join(project, 'serve'), dump + 'process.exit(3);\n');
+  } else {
+    await fs.writeFile(binary, `#!/usr/bin/env node
 const args = process.argv.slice(2);
 if (args[0] === '--version') { console.log('1.18.35'); process.exit(0); }
-if (args[0] === 'models') { process.exit(0); }
-process.exit(3);
+if (args[0] === 'models') process.exit(0);
+${dump}process.exit(3);
 `);
-  await fs.chmod(binary, 0o755);
+    await fs.chmod(binary, 0o755);
+  }
   process.env.SECRET_API_KEY = 'should-not-leak';
   const logFile = path.join(dir, 'opencode.log');
   const { createWriteStream } = await import('node:fs');
@@ -199,5 +217,11 @@ process.exit(3);
   await assert.rejects(startBackend(binary, dataDir, log), /OpenCode exited/);
   log.end();
   delete process.env.SECRET_API_KEY;
+  // 白名单真的生效：别人的密钥一个都带不进去，隔离目录与一次性口令都在。
+  const env = JSON.parse(await fs.readFile(envDump, 'utf8'));
+  assert.equal(env.SECRET_API_KEY, undefined);
+  assert.equal(env.XDG_DATA_HOME, path.join(dataDir, 'opencode', 'data'));
+  assert.equal(env.OPENCODE_DISABLE_AUTOUPDATE, 'true');
+  assert.equal((env.OPENCODE_SERVER_PASSWORD || '').length, 48);
   await fs.rm(dir, { recursive: true, force: true });
 });
