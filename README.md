@@ -60,7 +60,7 @@ flowchart LR
 
 先安装 WorkBuddy。**不需要另外装 Node.js**（打包后的应用用 Electron 自带的 Node 跑后台服务）。
 
-- **macOS**：解压 zip，把 `OC Ferry.app` 拖进「应用程序」，双击打开。未做 Apple 公证，首次打开可能要右键 →「打开」。
+- **macOS（Apple 芯片）**：下载 `OC-Ferry-<版本>-mac-arm64.dmg`（仓库右侧 Releases 里），双击打开，把 `OC Ferry` 拖进「应用程序」，再双击打开。未做 Apple 公证，首次打开可能要右键 →「打开」；若提示「已损坏」，先核对 Release 说明里的 sha256，再移除下载隔离标记：`xattr -dr com.apple.quarantine "/Applications/OC Ferry.app"`。也可以下载 zip，解压后把 `OC Ferry.app` 拖进「应用程序」。
 - **Windows**：运行 `OC-Ferry-Setup-<版本>-win-x64.exe`，装完桌面就有了图标，双击即开。
   安装包会同时做两件事：把**开机自启**写进当前用户的 Run 项（启动参数 `--hidden`，开机后只常驻托盘、不弹窗）、并保证卸载时把这一条摘干净。
   因此装完就等于「一直连着」——不用每次先开一次应用，WorkBuddy 里的免费模型才在。
@@ -81,7 +81,8 @@ npm ci
 npm test              # 85 项自动测试，不访问网络
 npm run desktop       # 起 Electron（窗口 + 托盘 + 后台服务）
 npm start             # 只起后台服务（无界面），用于调试
-npm run build:mac     # 打 macOS zip（ad-hoc 签名 + 深度严格校验）
+npm run build:mac     # 打 macOS 的 .app + zip + dmg（ad-hoc 签名 + 深度严格校验）
+npm run build:dmg     # 只重打安装包（复用已构建的 .app，几秒钟）
 npm run build:win     # 打 Windows 安装包（NSIS，桌面图标 + 开机自启）
 npm run build:win:portable   # 打 Windows 便携版（不写注册表、不自启）
 ```
