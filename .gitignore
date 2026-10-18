@@ -4,6 +4,7 @@ release-b*/
 release2/
 .electron-dist/
 .build-trash/
+.smoke-install/
 .workbuddy/
 .DS_Store
 *.log
