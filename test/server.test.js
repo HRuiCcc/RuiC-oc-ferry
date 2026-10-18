@@ -40,7 +40,12 @@ async function withServer(run, overrides = {}) {
     req.end();
   });
   try { return await run({ call, calls, state, server }); }
-  finally { await new Promise(resolve => server.close(resolve)); }
+  finally {
+    // 超大请求被拒时服务端读到一半就停，连接会残留在 close 的跟踪之外，
+    // 只调 close 回调永远不来（Windows 实测挂起）：先强制断开再关。
+    server.closeAllConnections?.();
+    await new Promise(resolve => server.close(resolve));
+  }
 }
 
 test('鉴权与来源围栏：无密钥 401、带 Origin 403、健康检查需要密钥', async () => {
