@@ -3,7 +3,7 @@
   "message": "运行中 · 11 个免费模型",
   "endpoint": "http://127.0.0.1:41980/v1",
   "modelsFile": "/Users/you/.workbuddy/models.json",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "opencodeVersion": "1.18.35",
   "useSystemProxy": false,
   "models": [
