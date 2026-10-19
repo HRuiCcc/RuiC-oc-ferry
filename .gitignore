@@ -1,4 +1,10 @@
 node_modules/
 release/
+release-b*/
+release2/
+.electron-dist/
+.build-trash/
+.smoke-install/
+.workbuddy/
 .DS_Store
 *.log

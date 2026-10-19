@@ -18,6 +18,10 @@ import { createProbeCache } from './probe-cache.js';
 
 // 服务端进程：Electron 以 fork 方式拉起它，也可以直接 `npm start` 独立运行。
 // 它只监听 127.0.0.1，口令是一次一发的本地密钥，所有状态都写在数据目录里。
+// 版本号跟着 package.json 走：别在状态里写死，否则发版时状态面板会停在旧版本。
+const packageFile = new URL('../package.json', import.meta.url);
+let APP_VERSION = '0.0.0';
+try { APP_VERSION = JSON.parse(await fs.readFile(packageFile, 'utf8')).version; } catch {}
 const dataDir = process.env.FERRY_DATA_DIR || dataDirectory();
 const port = Number(process.env.FERRY_PORT || 41980);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid FERRY_PORT');
@@ -37,7 +41,7 @@ let models = [], runtime, binary, stopping = false, refreshing;
 let previous = {};
 try { previous = JSON.parse(await fs.readFile(path.join(dataDir, 'status.json'), 'utf8')); } catch {}
 // 状态里会带上一轮留下的检测结果：重启后面板不至于一片空白，但也不当成新结论。
-let state = { useSystemProxy: settings.useSystemProxy === true || (process.platform === 'win32' && settings.useSystemProxy !== false), phase: 'starting', message: '正在启动', endpoint, pid: process.pid, version: '0.2.0', opencodeVersion: null, models: [], excludedModels: settings.excludedModels || [], modelResults: previous.modelResults || {}, sync: null, availableModels: [], probe: { running: false } };
+let state = { useSystemProxy: settings.useSystemProxy === true || (process.platform === 'win32' && settings.useSystemProxy !== false), phase: 'starting', message: '正在启动', endpoint, pid: process.pid, version: APP_VERSION, opencodeVersion: null, models: [], excludedModels: settings.excludedModels || [], modelResults: previous.modelResults || {}, sync: null, availableModels: [], probe: { running: false } };
 // 状态写入串行化：一个慢的异步更新不能盖掉后发生的状态。
 let statusWrites = Promise.resolve();
 function update(patch) {
