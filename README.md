@@ -161,4 +161,5 @@ docs/
 <div align="center">
   <p>如果这个工具帮到了你，可以请我喝杯咖啡 ☕</p>
   <img src="assets/wechat-donate.png" width="300" alt="微信赞赏码">
+  <p>微号：<strong>hrc_rch</strong>（说明来意）</p>
 </div>
